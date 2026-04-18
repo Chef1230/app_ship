@@ -1,0 +1,6 @@
+gradio>=6.0
+pandas>=2.0
+numpy>=1.26
+scikit-learn>=1.4
+openpyxl>=3.1
+pyarrow>=15.0
