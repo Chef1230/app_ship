@@ -15,4 +15,14 @@ SUPPORTED_IMPORT_SUFFIXES = {".csv", ".xlsx", ".xls"}
 SUPPORTED_IMPORT_SUFFIX = sorted(SUPPORTED_IMPORT_SUFFIXES)
 
 DEFAULT_EMPTY_COLUMNS = ["船号", "船名", "船长", "系统", "系统代号","主管长度"]
-RESULT_COLUMNS = ["y_predict", "abs_error", "rel_error_pct"]
+RESULT_COLUMNS = [
+    "Prediction",
+    "Error",
+    "Relative_Error(%)",
+    "y_predict",
+    "abs_error",
+    "rel_error_pct",
+    "预测值",
+    "绝对误差",
+    "相对误差",
+]

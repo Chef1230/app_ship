@@ -38,33 +38,47 @@ class PredictionService:
         if len(dataframe) < 2:
             raise ValueError("Leave-One-Out 至少需要 2 行数据")
 
-        y = pd.to_numeric(dataframe[target_col], errors="coerce")
+        base_df = self._drop_result_columns(dataframe)
+        if target_col not in base_df.columns:
+            raise ValueError(f"目标列不能是预测结果列：{target_col}")
+
+        y = pd.to_numeric(base_df[target_col], errors="coerce")
         if y.isna().any():
             raise ValueError("当前最小版仅支持数值型目标列，请检查空值或文本值")
 
         feature_columns = [
             column
-            for column in dataframe.columns
+            for column in base_df.columns
             if column != target_col and column not in RESULT_COLUMNS
         ]
-        X = dataframe[feature_columns]
+        X = base_df[feature_columns]
 
-        predictions = np.zeros(len(dataframe), dtype=float)
+        predictions = np.zeros(len(base_df), dtype=float)
         loo = LeaveOneOut()
-        for train_index, test_index in loo.split(dataframe):
+        for train_index, test_index in loo.split(base_df):
             predictor = ModelFactory.get_model(model_name)
             predictor.fit(X.iloc[train_index], y.iloc[train_index])
             predictions[test_index[0]] = float(predictor.predict(X.iloc[test_index])[0])
 
-        result_df = dataframe.copy()
-        result_df["y_predict"] = predictions
-        result_df["abs_error"] = (y - predictions).abs()
-        result_df["rel_error_pct"] = result_df["abs_error"] / y.abs().replace(0, np.nan) * 100
+        result_df = base_df.copy()
+        result_df["Prediction"] = predictions
+        result_df["Error"] = y - result_df["Prediction"]
+        result_df["Relative_Error(%)"] = (
+            result_df["Error"].abs() / y.abs().replace(0, np.nan) * 100
+        )
 
-        metrics_markdown = self._format_metrics(y, predictions, result_df["rel_error_pct"])
+        metrics_markdown = self._format_metrics(y, predictions, result_df["Relative_Error(%)"])
         self.project_repo.save_latest_result(project_id, result_df)
         self.project_repo.save_current_table(project_id, result_df)
         return result_df, metrics_markdown
+
+    def _drop_result_columns(self, dataframe: pd.DataFrame) -> pd.DataFrame:
+        existing_result_columns = [
+            column for column in RESULT_COLUMNS if column in dataframe.columns
+        ]
+        if not existing_result_columns:
+            return dataframe.copy()
+        return dataframe.drop(columns=existing_result_columns).copy()
 
     def _format_metrics(
         self,

@@ -271,7 +271,7 @@ def handle_predict(project_id: str, table_value, model_name: str, target_col: st
             gr.update(value=dataframe, visible=True),
             _target_update(dataframe, target_col),
             metrics,
-            "预测完成，结果已写入表格并保存到 latest_result.parquet",
+            "预测完成，已在表格中新增 Prediction、Error、Relative_Error(%) 列，并保存到 latest_result.parquet",
             _hide_download(),
         )
     except Exception as exc:
