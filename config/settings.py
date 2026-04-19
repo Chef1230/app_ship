@@ -14,5 +14,5 @@ DEFAULT_PORT = 7892
 SUPPORTED_IMPORT_SUFFIXES = {".csv", ".xlsx", ".xls"}
 SUPPORTED_IMPORT_SUFFIX = sorted(SUPPORTED_IMPORT_SUFFIXES)
 
-DEFAULT_EMPTY_COLUMNS = ["车辆名称", "管材长度", "管材直径", "管材数量", "目标值"]
+DEFAULT_EMPTY_COLUMNS = ["船号", "船名", "船长", "系统", "系统代号","主管长度"]
 RESULT_COLUMNS = ["y_predict", "abs_error", "rel_error_pct"]
