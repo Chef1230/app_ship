@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+import sys
+from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
 from models.base_model import BasePredictor
+
+# ------------- 配置区域 -------------
+# 添加 SAP RPT 本地路径到 sys.path；用户按本地环境自行配置该路径。
+RPT_PATH = r"D:\1Master\tabular\sap-rpt-1-oss"
+# ---------------------------------
 
 
 class RPTPredictor(BasePredictor):
@@ -86,14 +93,33 @@ class RPTPredictor(BasePredictor):
         if cls._regressor_class is not None:
             return
 
+        for import_path in cls._rpt_import_paths():
+            if import_path not in sys.path:
+                sys.path.insert(0, import_path)
+
         try:
             from sap_rpt_oss import SAP_RPT_OSS_Regressor
         except ImportError as exc:
-            raise RuntimeError(
-                "未找到 sap_rpt_oss，请先确保 SAP RPT 模块所在目录已加入 Python 路径"
-            ) from exc
+            missing_module = getattr(exc, "name", "")
+            if missing_module == "sap_rpt_oss":
+                message = f"无法在 {RPT_PATH} 找到 sap_rpt_oss 模块"
+            else:
+                message = (
+                    f"已找到本地 SAP RPT 路径 {RPT_PATH}，"
+                    f"但缺少依赖模块：{missing_module or exc}"
+                )
+            raise RuntimeError(message) from exc
 
         cls._regressor_class = SAP_RPT_OSS_Regressor
+
+    @staticmethod
+    def _rpt_import_paths() -> list[str]:
+        base_path = Path(RPT_PATH)
+        paths = [base_path]
+        src_path = base_path / "src"
+        if src_path.exists():
+            paths.append(src_path)
+        return [str(path) for path in paths]
 
 
 SAP_RPT_Adapter = RPTPredictor

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -10,7 +11,7 @@ from models.base_model import BasePredictor
 
 # ------------- 配置区域 -------------
 # 添加 TabPFN 本地路径到 sys.path；用户按本地环境自行配置该路径。
-TABPFN_PATH = "/data1/chef/TabPFN_local/TabPFN/src"
+TABPFN_PATH = r"D:\1Master\tabular\TabPFN"
 # ---------------------------------
 
 
@@ -139,14 +140,32 @@ class TabPFNPredictor(BasePredictor):
         if cls._tabpfn_regressor_class is not None and cls._model_version_class is not None:
             return
 
-        if TABPFN_PATH and TABPFN_PATH not in sys.path:
-            sys.path.insert(0, TABPFN_PATH)
+        for import_path in cls._tabpfn_import_paths():
+            if import_path not in sys.path:
+                sys.path.insert(0, import_path)
 
         try:
             from tabpfn import TabPFNRegressor
             from tabpfn.constants import ModelVersion
         except ImportError as exc:
-            raise RuntimeError(f"无法在 {TABPFN_PATH} 找到 tabpfn 模块") from exc
+            missing_module = getattr(exc, "name", "")
+            if missing_module == "tabpfn":
+                message = f"无法在 {TABPFN_PATH} 找到 tabpfn 模块"
+            else:
+                message = (
+                    f"已找到本地 TabPFN 路径 {TABPFN_PATH}，"
+                    f"但缺少依赖模块：{missing_module or exc}"
+                )
+            raise RuntimeError(message) from exc
 
         cls._tabpfn_regressor_class = TabPFNRegressor
         cls._model_version_class = ModelVersion
+
+    @staticmethod
+    def _tabpfn_import_paths() -> list[str]:
+        base_path = Path(TABPFN_PATH)
+        paths = [base_path]
+        src_path = base_path / "src"
+        if src_path.exists():
+            paths.append(src_path)
+        return [str(path) for path in paths]
