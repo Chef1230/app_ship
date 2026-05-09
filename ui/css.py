@@ -216,6 +216,12 @@ def get_main_css() -> str:
         box-shadow: none !important;
     }}
 
+    .project-more-menu svg,
+    .project-more-menu [data-testid="dropdown-arrow"],
+    .project-more-menu .dropdown-arrow {{
+        display: none !important;
+    }}
+
     .project-more-menu input {{
         background-image: url("{more_icon}") !important;
         background-repeat: no-repeat !important;
