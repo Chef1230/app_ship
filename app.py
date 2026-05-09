@@ -62,7 +62,7 @@ def _hide_download():
 def _project_card_label(project: dict, selected_project_id: str | None = None) -> str:
     prefix = "当前 " if project.get("project_id") == selected_project_id else ""
     name = project.get("project_name") or "未命名项目"
-    vehicle = project.get("vehicle_name") or "未填写车辆"
+    vehicle = project.get("vehicle_name") or "未填写系统名称"
     updated_at = (project.get("updated_at") or "")[:10]
     return f"{prefix}{name} | {vehicle} | {updated_at}"
 
@@ -301,7 +301,7 @@ def build_app() -> gr.Blocks:
             with gr.Column(scale=1, min_width=280, elem_classes=["panel-card"]):
                 gr.Markdown('<div class="panel-title">项目管理</div>')
                 project_name = gr.Textbox(label="项目名称", placeholder="未填写时使用上传文件名")
-                vehicle_name = gr.Textbox(label="车辆名称", placeholder="可选，用于搜索")
+                vehicle_name = gr.Textbox(label="系统名称", placeholder="可选，用于搜索")
                 project_file = gr.File(
                     label="项目数据文件",
                     file_types=[".csv", ".xlsx", ".xls"],
@@ -309,7 +309,7 @@ def build_app() -> gr.Blocks:
                 )
                 create_btn = gr.Button("新建项目", elem_classes=["primary-btn"])
 
-                search_keyword = gr.Textbox(label="搜索项目", placeholder="按项目名 / 车辆名称搜索")
+                search_keyword = gr.Textbox(label="搜索项目", placeholder="按项目名 / 系统名称搜索")
                 gr.Markdown('<div class="subtle-text">点击项目卡片加载表格，右侧 ... 可删除项目。</div>')
 
                 project_card_buttons = []
