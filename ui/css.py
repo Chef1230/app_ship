@@ -189,7 +189,7 @@ def get_main_css() -> str:
     }}
 
     .empty-state {{
-        min-height: 420px;
+        min-height: 60vh;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -211,7 +211,7 @@ def get_welcome_html() -> str:
     <div class="empty-state">
         <h2 style="margin-bottom: 10px;">欢迎使用预估系统</h2>
         <p style="max-width: 420px;">
-            请选择左侧项目，或先新建一个项目。后续这里可扩展为 chatbot、日志摘要、预测说明区。
+            请选择左侧项目，或先新建一个项目。
         </p>
     </div>
     """
