@@ -28,6 +28,13 @@ def _icon_data_uri(icon_name: str) -> str:
 def get_main_css() -> str:
     more_icon = _icon_data_uri("more.png")
     return f"""
+    html,
+    body {{
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+    }}
+
     :root {{
         --primary-blue: {PRIMARY_BLUE};
         --primary-blue-hover: {PRIMARY_BLUE_HOVER};
@@ -48,10 +55,20 @@ def get_main_css() -> str:
     .gradio-container {{
         background: var(--bg-main);
         color: var(--text-main);
+        height: 100vh !important;
+        min-height: 100vh !important;
+        overflow: hidden !important;
+        padding: 0 !important;
     }}
 
     .app-shell {{
-        padding: 8px 12px;
+        height: 100vh;
+        max-height: 100vh;
+        box-sizing: border-box;
+        align-items: stretch;
+        gap: 12px;
+        overflow: hidden;
+        padding: 12px;
         background: var(--bg-main);
     }}
 
@@ -61,6 +78,34 @@ def get_main_css() -> str:
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-soft);
         padding: 12px;
+        height: 100%;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: visible;
+    }}
+
+    .sidebar-panel {{
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }}
+
+    .content-panel {{
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }}
+
+    .project-list-shell {{
+        display: flex;
+        flex: 1 1 0 !important;
+        flex-direction: column;
+        min-height: 120px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-right: 4px;
     }}
 
     .panel-title {{
@@ -202,6 +247,28 @@ def get_main_css() -> str:
         margin-top: 10px;
         padding-top: 10px;
         border-top: 1px solid var(--primary-border);
+    }}
+
+    .section-divider {{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 16px 0 10px;
+        color: var(--text-secondary);
+        font-size: 14px;
+        font-weight: 600;
+    }}
+
+    .section-divider::before,
+    .section-divider::after {{
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(191, 219, 254, 0), rgba(191, 219, 254, 1), rgba(191, 219, 254, 0));
+    }}
+
+    .section-divider span {{
+        white-space: nowrap;
     }}
     """
 

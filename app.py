@@ -298,7 +298,7 @@ def build_app() -> gr.Blocks:
         project_slot_ids = gr.State(value=initial_project_ids)
 
         with gr.Row(elem_classes=["app-shell"]):
-            with gr.Column(scale=1, min_width=280, elem_classes=["panel-card"]):
+            with gr.Column(scale=1, min_width=280, elem_classes=["panel-card", "sidebar-panel"]):
                 gr.Markdown('<div class="panel-title">项目管理</div>')
                 project_name = gr.Textbox(label="项目名称", placeholder="未填写时使用上传文件名")
                 vehicle_name = gr.Textbox(label="系统名称", placeholder="可选，用于搜索")
@@ -309,14 +309,14 @@ def build_app() -> gr.Blocks:
                 )
                 create_btn = gr.Button("新建项目", elem_classes=["primary-btn"])
 
-                gr.Markdown('<div class="section-divider"><span>选择项目</span></div>')
+                gr.Markdown('<div class="section-divider"><span>项目列表</span></div>')
                 search_keyword = gr.Textbox(label="搜索项目", placeholder="按项目名 / 系统名称搜索")
                 gr.Markdown('<div class="subtle-text">点击项目卡片加载表格，右侧 ... 可删除项目。</div>')
 
                 project_card_buttons = []
                 project_action_menus = []
                 project_card_rows = []
-                with gr.Column():
+                with gr.Column(elem_classes=["project-list-shell"]):
                     for index in range(MAX_PROJECT_CARDS):
                         config = initial_card_configs[index]
                         with gr.Row(
@@ -345,7 +345,7 @@ def build_app() -> gr.Blocks:
 
                 sidebar_status = gr.Markdown("请选择项目，或新建一个项目。")
 
-            with gr.Column(scale=4, min_width=620, elem_classes=["panel-card"]):
+            with gr.Column(scale=4, min_width=620, elem_classes=["panel-card", "content-panel"]):
                 header = gr.Markdown(_header())
 
                 with gr.Row(elem_classes=["toolbar-row"]):
