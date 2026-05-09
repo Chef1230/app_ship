@@ -309,6 +309,7 @@ def build_app() -> gr.Blocks:
                 )
                 create_btn = gr.Button("新建项目", elem_classes=["primary-btn"])
 
+                gr.Markdown('<div class="section-divider"><span>选择项目</span></div>')
                 search_keyword = gr.Textbox(label="搜索项目", placeholder="按项目名 / 系统名称搜索")
                 gr.Markdown('<div class="subtle-text">点击项目卡片加载表格，右侧 ... 可删除项目。</div>')
 
