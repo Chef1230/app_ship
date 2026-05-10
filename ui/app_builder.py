@@ -80,10 +80,12 @@ def predict(project_id, df, model_name, target_col):
 
 def export_current(project_id, df):
     if not project_id:
-        return None, "请先选择项目"
+        raise gr.Error("请先选择项目")
+    if df is None:
+        raise gr.Error("当前没有表格可导出")
     df = pd.DataFrame(df)
     export_path = export_service.export_excel(project_id, df)
-    return export_path, "导出成功"
+    return gr.update(value=export_path), "导出成功"
 
 def build_app():
     projects = project_service.list_projects()
@@ -110,6 +112,14 @@ def build_app():
 
             with gr.Column(scale=4, elem_classes="workspace-wrap"):
                 header_text = gr.Markdown(f"<div class='app-header'>{APP_TITLE}</div>")
+                data_table = gr.Dataframe(
+                    label="表格数据",
+                    interactive=True,
+                    wrap=True,
+                    row_count=(10, "dynamic"),
+                    col_count=(5, "dynamic"),
+                    render=False,
+                )
 
                 with gr.Row():
                     file_input = gr.File(label="导入 Excel/CSV", file_types=[".csv", ".xlsx", ".xls"])
@@ -117,15 +127,11 @@ def build_app():
                     save_btn = gr.Button("保存表格")
                     add_row_btn = gr.Button("新增行")
                     add_col_btn = gr.Button("新增列")
-                    export_btn = gr.Button("导出 Excel")
+                    export_btn = gr.DownloadButton(
+                        "导出 Excel",
+                    )
 
-                data_table = gr.Dataframe(
-                    label="表格数据",
-                    interactive=True,
-                    wrap=True,
-                    row_count=(10, "dynamic"),
-                    col_count=(5, "dynamic"),
-                )
+                data_table.render()
 
                 with gr.Row():
                     model_dropdown = gr.Dropdown(
@@ -189,11 +195,10 @@ def build_app():
             inputs=[project_list, data_table, model_dropdown, target_col_dropdown],
             outputs=[data_table, status_text, download_file]
         )
-
         export_btn.click(
             fn=export_current,
             inputs=[project_list, data_table],
-            outputs=[download_file, status_text]
+            outputs=[export_btn, status_text]
         )
 
     return demo

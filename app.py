@@ -281,10 +281,7 @@ def handle_predict(project_id: str, table_value, model_name: str, target_col: st
 def handle_export(project_id: str, table_value):
     try:
         export_path = export_service.export_excel(project_id, table_value)
-        return (
-            gr.update(value=export_path, visible=True),
-            f"已导出 Excel：{export_path}",
-        )
+        return gr.update(value=export_path), f"已导出 Excel：{export_path}"
     except Exception as exc:
         raise gr.Error(str(exc)) from exc
 
@@ -347,15 +344,6 @@ def build_app() -> gr.Blocks:
 
             with gr.Column(scale=4, min_width=620, elem_classes=["panel-card", "content-panel"]):
                 header = gr.Markdown(_header())
-
-                with gr.Row(elem_classes=["toolbar-row"]):
-                    save_btn = gr.Button("保存", scale=1)
-                    export_btn = gr.Button("导出 Excel", scale=1, elem_classes=["primary-btn"])
-
-                download_file = gr.File(label="下载导出的 Excel", visible=False, interactive=False)
-                action_status = gr.Markdown("点击左侧项目加载表格。编辑表格后，点击保存即可持久化到当前项目。")
-
-                welcome = gr.HTML(get_welcome_html(), visible=True)
                 data_table = gr.Dataframe(
                     value=table_service.empty_dataframe(),
                     label="结构化表格",
@@ -366,7 +354,22 @@ def build_app() -> gr.Blocks:
                     column_count=5,
                     max_height=520,
                     show_search="filter",
+                    render=False,
                 )
+
+                with gr.Row(elem_classes=["toolbar-row"]):
+                    save_btn = gr.Button("保存", scale=1)
+                    export_btn = gr.DownloadButton(
+                        "导出 Excel",
+                        scale=1,
+                        elem_classes=["primary-btn"],
+                    )
+
+                download_file = gr.File(label="下载导出的 Excel", visible=False, interactive=False)
+                action_status = gr.Markdown("点击左侧项目加载表格。编辑表格后，点击保存即可持久化到当前项目。")
+
+                welcome = gr.HTML(get_welcome_html(), visible=True)
+                data_table.render()
 
                 with gr.Column(elem_classes=["predict-section"]):
                     gr.Markdown('<div class="panel-title">预测</div>')
@@ -460,9 +463,8 @@ def build_app() -> gr.Blocks:
         export_btn.click(
             fn=handle_export,
             inputs=[selected_project_id, data_table],
-            outputs=[download_file, action_status],
+            outputs=[export_btn, action_status],
         )
-
     return demo
 
 
