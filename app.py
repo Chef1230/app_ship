@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import gradio as gr
 
+from config.model_registry import MODEL_OPTIONS
 from config.settings import APP_TITLE, DEFAULT_HOST, DEFAULT_PORT
 from config.theme import get_theme
 from core.paths import ensure_data_dirs
-from models.model_factory import ModelFactory
 from services.export_service import ExportService
 from services.prediction_service import PredictionService
 from services.project_service import ProjectService
@@ -376,7 +376,7 @@ def build_app() -> gr.Blocks:
                     with gr.Row():
                         model_name = gr.Dropdown(
                             label="模型",
-                            choices=ModelFactory.available_models(),
+                            choices=MODEL_OPTIONS,
                             value="RPT",
                             interactive=True,
                         )
