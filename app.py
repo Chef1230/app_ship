@@ -388,7 +388,7 @@ def build_app() -> gr.Blocks:
                         )
                         predict_btn = gr.Button("开始预测", elem_classes=["primary-btn"])
 
-                    metrics = gr.Markdown("")
+                    metrics = gr.Markdown("", elem_classes=["metrics-block"])
 
         card_outputs = [project_slot_ids]
         for row, button, menu in zip(

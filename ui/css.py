@@ -255,6 +255,32 @@ def get_main_css() -> str:
         border-top: 1px solid var(--primary-border);
     }}
 
+    .metrics-block {{
+        min-height: 0;
+    }}
+
+    .metrics-block p {{
+        margin: 0 !important;
+    }}
+
+    .metrics-inline {{
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 18px;
+        align-items: center;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        padding: 4px 0 2px;
+        font-size: 13px;
+        color: var(--text-main);
+        scrollbar-width: thin;
+    }}
+
+    .metrics-inline span {{
+        flex: 0 0 auto;
+    }}
+
     .section-divider {{
         display: flex;
         align-items: center;

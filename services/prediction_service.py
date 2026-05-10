@@ -92,7 +92,9 @@ class PredictionService:
 
         mape_text = "N/A" if np.isnan(mape) else f"{mape:.4f}%"
         return (
-            f"平均绝对误差（MAE）：{mae:.4f}\n\n"
-            f"平均相对误差（MAPE）：{mape_text}\n\n"
-            f"均方根误差（RMSE）：{rmse:.4f}"
+            '<div class="metrics-inline">'
+            f"<span>平均绝对误差（MAE）：{mae:.4f}</span>"
+            f"<span>平均相对误差（MAPE）：{mape_text}</span>"
+            f"<span>均方根误差（RMSE）：{rmse:.4f}</span>"
+            "</div>"
         )
