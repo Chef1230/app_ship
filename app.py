@@ -450,7 +450,7 @@ def build_app() -> gr.Blocks:
             inputs=[selected_project_id, data_table],
             outputs=[data_table, target_col, action_status, download_file],
         )
-        data_table.change(
+        data_table.input(
             fn=handle_table_change,
             inputs=[data_table, target_col],
             outputs=target_col,
